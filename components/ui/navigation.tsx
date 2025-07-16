@@ -31,6 +31,7 @@ const navigationItems = [
   { name: 'Signaux', href: '/signals', icon: TrendingUp },
   { name: 'Performance', href: '/performance', icon: BarChart3 },
   { name: 'Backtesting', href: '/backtesting', icon: TrendingUp },
+  { name: 'Trading Unifié', href: '/trading', icon: TrendingUp },
   { name: 'Courtiers', href: '/brokers', icon: ExternalLink },
   { name: 'Paramètres', href: '/settings', icon: Settings },
   { name: 'Bot Telegram', href: '/telegram', icon: MessageCircle },
