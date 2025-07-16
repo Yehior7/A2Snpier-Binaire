@@ -1,12 +1,13 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { ThemeProvider } from '@/lib/theme-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'TradeAlgo - Plateforme de Trading Algorithmique',
-  description: 'Plateforme de trading algorithmique propulsée par l\'IA. Générez des signaux de trading précis avec 90% de taux de réussite.',
+  title: 'A2Sniper Binaire - Plateforme de Trading IA',
+  description: 'Plateforme de trading binaire propulsée par l\'IA. Générez des signaux de trading précis avec 90% de taux de réussite.',
 };
 
 export default function RootLayout({
@@ -16,8 +17,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
-      <body className={inter.className}>
-        {children}
+      <body className={`${inter.className} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

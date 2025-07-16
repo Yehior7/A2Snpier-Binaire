@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Bell, Link2, Clock, TrendingUp, TrendingDown, MessageCircle, X, RefreshCw, Download, Settings, BarChart3, Target, DollarSign } from 'lucide-react';
+import { Bell, Link2, Clock, TrendingUp, TrendingDown, MessageCircle, X, RefreshCw, Download, Settings, BarChart3, Target, DollarSign, Moon, Sun } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
+import { useTheme } from '@/lib/theme-provider';
+import { CandlestickAnimation } from '@/components/ui/candlestick-animation';
 
 export default function DashboardPage() {
   const { user, signals, addSignal } = useAppStore();
+  const { theme, setTheme } = useTheme();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showChat, setShowChat] = useState(false);
   const [gaugeValue, setGaugeValue] = useState(75);
@@ -199,36 +202,39 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900 dark:via-blue-900 dark:to-slate-900 relative overflow-hidden">
+      {/* Animation de bougies en arrière-plan */}
+      <CandlestickAnimation />
+      
       {/* Sidebar */}
-      <div className="fixed left-0 top-0 h-full w-64 bg-slate-800/50 backdrop-blur-xl border-r border-slate-700/50 z-40">
+      <div className="fixed left-0 top-0 h-full w-64 bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border-r border-gray-200 dark:border-slate-700/50 z-40">
         <div className="p-6">
           <div className="flex items-center space-x-3 mb-8">
             <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-white">TradeAlgo.AI</span>
+            <span className="text-xl font-bold text-gray-900 dark:text-white">A2Sniper Binaire</span>
           </div>
 
           <nav className="space-y-2">
-            <div className="bg-blue-600 text-white px-4 py-3 rounded-lg font-medium">
+            <div className="bg-blue-600 dark:bg-blue-600 text-white px-4 py-3 rounded-lg font-medium">
               Dashboard
             </div>
             <button 
               onClick={() => window.location.href = '/signals'}
-              className="w-full text-left text-gray-400 px-4 py-3 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
+              className="w-full text-left text-gray-600 dark:text-gray-400 px-4 py-3 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-700/50 rounded-lg transition-colors"
             >
               Signaux
             </button>
             <button 
               onClick={() => window.location.href = '/performance'}
-              className="w-full text-left text-gray-400 px-4 py-3 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
+              className="w-full text-left text-gray-600 dark:text-gray-400 px-4 py-3 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-700/50 rounded-lg transition-colors"
             >
               Performance
             </button>
             <button 
               onClick={() => window.location.href = '/analytics'}
-              className="w-full text-left text-gray-400 px-4 py-3 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
+              className="w-full text-left text-gray-600 dark:text-gray-400 px-4 py-3 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-700/50 rounded-lg transition-colors"
             >
               Analytics
             </button>
@@ -237,35 +243,41 @@ export default function DashboardPage() {
       </div>
 
       {/* Main Content */}
-      <div className="ml-64 p-6">
+      <div className="ml-64 p-6 relative z-10">
         {/* Header avec boutons fonctionnels */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-white mb-1">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
               Bienvenue, {user?.name || 'Trader'}
             </h1>
-            <p className="text-gray-400">
+            <p className="text-gray-600 dark:text-gray-400">
               Dernière mise à jour: {currentTime.toLocaleTimeString('fr-FR')}
             </p>
           </div>
           
           <div className="flex items-center space-x-4">
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
+            >
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
             <button 
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+              className="p-2 bg-blue-600 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-700 transition-colors disabled:opacity-50"
             >
               <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
             </button>
             <button 
               onClick={handleExport}
-              className="p-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              className="p-2 bg-green-600 dark:bg-green-600 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-700 transition-colors"
             >
               <Download className="w-5 h-5" />
             </button>
             <button 
               onClick={() => window.location.href = '/settings'}
-              className="p-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              className="p-2 bg-gray-600 dark:bg-gray-600 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-700 transition-colors"
             >
               <Settings className="w-5 h-5" />
             </button>
@@ -278,14 +290,14 @@ export default function DashboardPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-6"
+            className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-xl p-6"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400 mb-1">Total Signaux</p>
-                <p className="text-2xl font-bold text-white">{liveMetrics.totalSignals}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Signaux</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{liveMetrics.totalSignals}</p>
               </div>
-              <BarChart3 className="w-8 h-8 text-blue-400" />
+              <BarChart3 className="w-8 h-8 text-blue-600 dark:text-blue-400" />
             </div>
           </motion.div>
 
@@ -293,14 +305,14 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-6"
+            className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-xl p-6"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400 mb-1">Signaux Actifs</p>
-                <p className="text-2xl font-bold text-blue-400">{liveMetrics.activeSignals}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Signaux Actifs</p>
+                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{liveMetrics.activeSignals}</p>
               </div>
-              <Clock className="w-8 h-8 text-blue-400" />
+              <Clock className="w-8 h-8 text-blue-600 dark:text-blue-400" />
             </div>
           </motion.div>
 
@@ -308,14 +320,14 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-6"
+            className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-xl p-6"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400 mb-1">Taux Réussite</p>
-                <p className="text-2xl font-bold text-green-400">{liveMetrics.winRate.toFixed(1)}%</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Taux Réussite</p>
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400">{liveMetrics.winRate.toFixed(1)}%</p>
               </div>
-              <Target className="w-8 h-8 text-green-400" />
+              <Target className="w-8 h-8 text-green-600 dark:text-green-400" />
             </div>
           </motion.div>
 
@@ -323,14 +335,14 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-6"
+            className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-xl p-6"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400 mb-1">Profit Aujourd'hui</p>
-                <p className="text-2xl font-bold text-green-400">${liveMetrics.todayProfit.toFixed(2)}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Profit Aujourd'hui</p>
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400">${liveMetrics.todayProfit.toFixed(2)}</p>
               </div>
-              <DollarSign className="w-8 h-8 text-green-400" />
+              <DollarSign className="w-8 h-8 text-green-600 dark:text-green-400" />
             </div>
           </motion.div>
 
@@ -338,14 +350,14 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-6"
+            className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-xl p-6"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400 mb-1">Temps Moyen</p>
-                <p className="text-2xl font-bold text-yellow-400">{liveMetrics.avgResponseTime.toFixed(0)}s</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Temps Moyen</p>
+                <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{liveMetrics.avgResponseTime.toFixed(0)}s</p>
               </div>
-              <Clock className="w-8 h-8 text-yellow-400" />
+              <Clock className="w-8 h-8 text-yellow-600 dark:text-yellow-400" />
             </div>
           </motion.div>
         </div>
@@ -353,12 +365,12 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Technical Analysis avec gauge animé */}
           <div className="lg:col-span-2">
-            <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-6">
+            <div className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-xl p-6">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
-                  <TrendingUp className="w-4 h-4 text-blue-400" />
+                <div className="w-8 h-8 bg-blue-100 dark:bg-white/10 rounded-full flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
-                <h2 className="text-xl font-semibold text-white">Analyse Technique Temps Réel</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Analyse Technique Temps Réel</h2>
               </div>
               
               <div className="flex justify-center">
@@ -367,23 +379,23 @@ export default function DashboardPage() {
             </div>
 
             {/* Asset Realtime */}
-            <div className="mt-6 bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-6">
+            <div className="mt-6 bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-xl p-6">
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-gray-400 text-sm mb-2">Actif Principal</h3>
-                  <div className="text-2xl font-bold text-white mb-2">EUR/USD</div>
-                  <div className="text-gray-400 text-sm mb-4">Position</div>
-                  <div className="text-lg text-blue-400">
+                  <h3 className="text-gray-600 dark:text-gray-400 text-sm mb-2">Actif Principal</h3>
+                  <div className="text-2xl font-bold text-gray-900 dark:text-white mb-2">EUR/USD</div>
+                  <div className="text-gray-600 dark:text-gray-400 text-sm mb-4">Position</div>
+                  <div className="text-lg text-blue-600 dark:text-blue-400">
                     {gaugeValue > 60 ? 'Haussière' : 'Baissière'}
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-gray-400 text-sm mb-2">Heure Système</h3>
-                  <div className="text-2xl font-bold text-white mb-2">
+                  <h3 className="text-gray-600 dark:text-gray-400 text-sm mb-2">Heure Système</h3>
+                  <div className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                     {currentTime.toLocaleTimeString('fr-FR')}
                   </div>
-                  <div className="text-gray-400 text-sm mb-4">Prochaine Analyse</div>
-                  <div className="text-lg text-white">
+                  <div className="text-gray-600 dark:text-gray-400 text-sm mb-4">Prochaine Analyse</div>
+                  <div className="text-lg text-gray-900 dark:text-white">
                     {Math.floor((60 - currentTime.getSeconds()) / 10) * 10}s
                   </div>
                 </div>
@@ -393,12 +405,12 @@ export default function DashboardPage() {
 
           {/* History Panel avec signaux temps réel */}
           <div className="lg:col-span-1">
-            <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-xl p-6">
+            <div className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white">Signaux Récents</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Signaux Récents</h2>
                 <button 
                   onClick={() => window.location.href = '/signals'}
-                  className="text-blue-400 hover:text-blue-300 text-sm"
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm"
                 >
                   Voir tout
                 </button>
@@ -411,7 +423,7 @@ export default function DashboardPage() {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-slate-700/30 rounded-lg p-4"
+                    className="bg-gray-100 dark:bg-slate-700/30 rounded-lg p-4"
                   >
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-2">
@@ -431,20 +443,20 @@ export default function DashboardPage() {
                           {signal.status}
                         </span>
                       </div>
-                      <div className="text-gray-400 text-xs">
+                      <div className="text-gray-600 dark:text-gray-400 text-xs">
                         {signal.timestamp.toLocaleTimeString('fr-FR')}
                       </div>
                     </div>
                     
-                    <div className="text-white font-medium mb-2">{signal.pair}</div>
+                    <div className="text-gray-900 dark:text-white font-medium mb-2">{signal.pair}</div>
                     
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-400 text-sm">Confiance</span>
-                      <span className="text-white text-sm">{signal.confidence}%</span>
+                      <span className="text-gray-600 dark:text-gray-400 text-sm">Confiance</span>
+                      <span className="text-gray-900 dark:text-white text-sm">{signal.confidence}%</span>
                     </div>
                     
                     <div className="mt-2">
-                      <div className="w-full bg-slate-600 rounded-full h-1">
+                      <div className="w-full bg-gray-300 dark:bg-slate-600 rounded-full h-1">
                         <div 
                           className="bg-blue-500 h-1 rounded-full transition-all duration-300"
                           style={{ width: `${signal.confidence}%` }}
@@ -464,35 +476,35 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="fixed bottom-6 right-6 w-80 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50"
+          className="fixed bottom-6 right-6 w-80 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl shadow-2xl z-50"
         >
-          <div className="flex items-center justify-between p-4 border-b border-slate-700">
+          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-slate-700">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                 <MessageCircle className="w-4 h-4 text-white" />
               </div>
-              <span className="text-white font-medium">Assistant IA</span>
+              <span className="text-gray-900 dark:text-white font-medium">Assistant IA</span>
             </div>
             <button 
               onClick={() => setShowChat(false)}
-              className="text-gray-400 hover:text-white"
+              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
           <div className="p-4 h-64 overflow-y-auto">
-            <div className="text-gray-400 text-sm mb-4">
+            <div className="text-gray-600 dark:text-gray-400 text-sm mb-4">
               Bonjour ! Comment puis-je vous aider avec votre trading aujourd'hui ?
             </div>
-            <div className="bg-slate-700 p-3 rounded-lg text-sm text-white mb-4">
+            <div className="bg-gray-100 dark:bg-slate-700 p-3 rounded-lg text-sm text-gray-900 dark:text-white mb-4">
               Vos performances sont excellentes aujourd'hui avec un taux de réussite de {liveMetrics.winRate.toFixed(1)}% !
             </div>
           </div>
-          <div className="p-4 border-t border-slate-700">
+          <div className="p-4 border-t border-gray-200 dark:border-slate-700">
             <input
               type="text"
               placeholder="Tapez votre message..."
-              className="w-full bg-slate-700 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </motion.div>
